@@ -1,0 +1,173 @@
+<div class="product-page">
+
+  <!-- ═══ Page Header ═══ -->
+  <div class="page-header">
+    <div class="ph-left">
+      <h1 class="ph-title">Products</h1>
+      <p class="ph-sub">Manage your entire dropshipping catalog</p>
+    </div>
+    <button class="btn-add" (click)="openAdd()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+        <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+      </svg>
+      Add Product
+    </button>
+  </div>
+
+  <!-- ═══ Stats Row ═══ -->
+  <div class="stats-row">
+    <div class="stat-card">
+      <div class="sc-value">{{ counts.all }}</div>
+      <div class="sc-label">Total Products</div>
+    </div>
+    <div class="stat-card sc-green">
+      <div class="sc-value">{{ counts.active }}</div>
+      <div class="sc-label">Active</div>
+    </div>
+    <div class="stat-card sc-red">
+      <div class="sc-value">{{ counts['out-of-stock'] }}</div>
+      <div class="sc-label">Out of Stock</div>
+    </div>
+    <div class="stat-card sc-amber">
+      <div class="sc-value">{{ counts.paused }}</div>
+      <div class="sc-label">Paused</div>
+    </div>
+    <div class="stat-card sc-muted">
+      <div class="sc-value">{{ counts.removed }}</div>
+      <div class="sc-label">Removed</div>
+    </div>
+  </div>
+
+  <!-- ═══ Filter Bar ═══ -->
+  <div class="filter-bar">
+    <div class="filter-tabs">
+      <button class="ftab" [class.ftab-on]="activeFilter==='all'"           (click)="setFilter('all')">All <span class="ftab-count">{{ counts.all }}</span></button>
+      <button class="ftab" [class.ftab-on]="activeFilter==='active'"        (click)="setFilter('active')">Active <span class="ftab-count green">{{ counts.active }}</span></button>
+      <button class="ftab" [class.ftab-on]="activeFilter==='out-of-stock'"  (click)="setFilter('out-of-stock')">Out of Stock <span class="ftab-count red">{{ counts['out-of-stock'] }}</span></button>
+      <button class="ftab" [class.ftab-on]="activeFilter==='paused'"        (click)="setFilter('paused')">Paused <span class="ftab-count amber">{{ counts.paused }}</span></button>
+      <button class="ftab" [class.ftab-on]="activeFilter==='removed'"       (click)="setFilter('removed')">Removed <span class="ftab-count muted">{{ counts.removed }}</span></button>
+    </div>
+
+    <div class="search-wrap">
+      <svg class="search-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+      </svg>
+      <input
+        class="search-input"
+        type="text"
+        placeholder="Search products..."
+        [(ngModel)]="searchQuery"
+      />
+    </div>
+  </div>
+
+  <!-- ═══ Product Grid ═══ -->
+  <div class="product-grid" *ngIf="filteredProducts.length > 0">
+    <div
+      *ngFor="let p of filteredProducts; trackBy: trackById"
+      class="product-card"
+    >
+      <!-- Image / Placeholder -->
+      <div class="card-img">
+        <img *ngIf="p.images[0]" [src]="p.images[0]" [alt]="p.title" (error)="p.images[0]=''">
+        <div *ngIf="!p.images[0]" class="img-placeholder">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+            <polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/>
+          </svg>
+        </div>
+        <span class="status-badge {{ p.status }}">{{ statusLabel(p.status) }}</span>
+      </div>
+
+      <!-- Card Body -->
+      <div class="card-body">
+        <h3 class="card-title" [title]="p.title">{{ p.title }}</h3>
+
+        <a class="card-url" [href]="p.amazonUrl" target="_blank" (click)="$event.stopPropagation()">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+            <polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/>
+          </svg>
+          {{ shortUrl(p.amazonUrl) }}
+        </a>
+
+        <!-- Prices -->
+        <div class="price-row">
+          <div class="price-item">
+            <div class="price-label">Sell</div>
+            <div class="price-val">${{ p.sellingPrice | number:'1.2-2' }}</div>
+          </div>
+          <div class="price-divider"></div>
+          <div class="price-item">
+            <div class="price-label">Cost</div>
+            <div class="price-val">${{ p.costPrice | number:'1.2-2' }}</div>
+          </div>
+          <div class="price-divider"></div>
+          <div class="price-item">
+            <div class="price-label">Profit</div>
+            <div class="price-val profit-val">${{ p.profit | number:'1.2-2' }}</div>
+          </div>
+        </div>
+
+        <!-- Margin bar -->
+        <div class="margin-track">
+          <div
+            class="margin-fill"
+            [class.mf-high]="p.profitMargin >= 40"
+            [class.mf-mid]="p.profitMargin >= 25 && p.profitMargin < 40"
+            [class.mf-low]="p.profitMargin < 25"
+            [style.width.%]="p.profitMargin"
+          ></div>
+        </div>
+        <div class="margin-label">{{ p.profitMargin | number:'1.1-1' }}% margin</div>
+      </div>
+
+      <!-- Card Actions -->
+      <div class="card-actions">
+        <span class="card-date">Added {{ p.dateAdded | date:'MMM d, y' }}</span>
+        <div class="action-btns">
+          <button class="btn-edit" (click)="openEdit(p)">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+              <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+            </svg>
+            Edit
+          </button>
+          <button class="btn-del" (click)="deleteProduct(p.id)">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
+              <path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
+            </svg>
+            Delete
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ Empty State ═══ -->
+  <div class="empty-state" *ngIf="filteredProducts.length === 0">
+    <div class="empty-icon">
+      <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+      </svg>
+    </div>
+    <h3>{{ searchQuery ? 'No results found' : 'No products yet' }}</h3>
+    <p>{{ searchQuery ? 'Try a different search term or clear the filter.' : 'Add your first product to start tracking your catalog.' }}</p>
+    <button class="btn-add" *ngIf="!searchQuery" (click)="openAdd()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+        <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+      </svg>
+      Add Your First Product
+    </button>
+  </div>
+
+</div>
+
+<!-- ═══ Manage Product Modal ═══ -->
+<app-manage-product
+  *ngIf="showModal"
+  [product]="editingProduct"
+  (saved)="onSaved($event)"
+  (cancelled)="onCancelled()"
+/>

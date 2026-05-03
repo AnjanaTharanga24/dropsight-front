@@ -1,0 +1,187 @@
+<div class="overlay" (click)="cancel()">
+  <div class="drawer" (click)="$event.stopPropagation()">
+
+    <!-- ── Header ── -->
+    <div class="drawer-head">
+      <div class="dh-left">
+        <div class="dh-icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+          </svg>
+        </div>
+        <div>
+          <h2 class="dh-title">{{ product ? 'Edit Product' : 'Add New Product' }}</h2>
+          <p class="dh-sub">{{ product ? 'Update the product details' : 'Fill in the product information' }}</p>
+        </div>
+      </div>
+      <button class="close-btn" (click)="cancel()">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+          <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+    </div>
+
+    <!-- ── Body ── -->
+    <div class="drawer-body">
+
+      <!-- Product Title -->
+      <div class="field" [class.field-error]="submitted && !form.title.trim()">
+        <label class="field-label">Product Title <span class="req">*</span></label>
+        <input class="field-input" type="text" [(ngModel)]="form.title"
+               placeholder="e.g. Sony WH-1000XM5 Wireless Headphones" maxlength="200"/>
+        <span class="err-msg" *ngIf="submitted && !form.title.trim()">Title is required</span>
+      </div>
+
+      <!-- Amazon URL -->
+      <div class="field" [class.field-error]="submitted && !form.amazonUrl.trim()">
+        <label class="field-label">Amazon URL <span class="req">*</span></label>
+        <div class="input-icon-wrap">
+          <svg class="input-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
+            <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
+          </svg>
+          <input class="field-input has-icon" type="url" [(ngModel)]="form.amazonUrl"
+                 placeholder="https://www.amazon.com/dp/BXXXXXXX"/>
+        </div>
+        <span class="err-msg" *ngIf="submitted && !form.amazonUrl.trim()">Amazon URL is required</span>
+      </div>
+
+      <!-- Prices -->
+      <div class="field-row">
+        <div class="field">
+          <label class="field-label">Selling Price ($)</label>
+          <div class="input-icon-wrap">
+            <span class="input-icon currency">$</span>
+            <input class="field-input has-icon" type="number" [(ngModel)]="form.sellingPrice" min="0" step="0.01" placeholder="0.00"/>
+          </div>
+        </div>
+        <div class="field">
+          <label class="field-label">Cost Price ($)</label>
+          <div class="input-icon-wrap">
+            <span class="input-icon currency">$</span>
+            <input class="field-input has-icon" type="number" [(ngModel)]="form.costPrice" min="0" step="0.01" placeholder="0.00"/>
+          </div>
+        </div>
+      </div>
+
+      <!-- Profit Preview -->
+      <div class="profit-preview">
+        <div class="pp-card" [class.pp-pos]="computedProfit > 0" [class.pp-neg]="computedProfit < 0">
+          <div class="pp-label">Expected Profit</div>
+          <div class="pp-value">${{ computedProfit | number:'1.2-2' }}</div>
+        </div>
+        <div class="pp-card" [class.pp-pos]="computedMargin > 0" [class.pp-neg]="computedMargin < 0">
+          <div class="pp-label">Profit Margin</div>
+          <div class="pp-value">{{ computedMargin | number:'1.1-1' }}%</div>
+        </div>
+        <div class="pp-card pp-neutral">
+          <div class="pp-label">Health</div>
+          <div class="pp-value">
+            <span *ngIf="computedMargin >= 40"                          class="hchip green">Excellent</span>
+            <span *ngIf="computedMargin >= 25 && computedMargin < 40"   class="hchip amber">Good</span>
+            <span *ngIf="computedMargin > 0  && computedMargin < 25"    class="hchip red">Low</span>
+            <span *ngIf="computedMargin <= 0"                           class="hchip red">No Profit</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Status -->
+      <div class="field">
+        <label class="field-label">Status</label>
+        <div class="select-wrap">
+          <select class="field-select" [(ngModel)]="form.status">
+            <option value="active">Active</option>
+            <option value="out-of-stock">Out of Stock</option>
+            <option value="paused">Paused</option>
+            <option value="removed">Removed</option>
+          </select>
+          <svg class="select-arrow" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="6 9 12 15 18 9"/>
+          </svg>
+        </div>
+      </div>
+
+      <!-- ── Image Upload ── -->
+      <div class="field">
+        <label class="field-label">
+          Product Images
+          <span class="field-hint">PNG, JPG, WebP — up to 10 MB each</span>
+        </label>
+
+        <!-- Hidden file input -->
+        <input
+          #fileInput
+          type="file"
+          accept="image/*"
+          multiple
+          hidden
+          (change)="onFileInputChange($event)"
+        />
+
+        <!-- Drop zone -->
+        <div
+          class="drop-zone"
+          [class.drop-zone-active]="isDragOver"
+          (dragover)="onDragOver($event)"
+          (dragleave)="onDragLeave()"
+          (drop)="onDrop($event)"
+          (click)="openFilePicker()"
+        >
+          <div class="dz-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="16 16 12 12 8 16"/>
+              <line x1="12" y1="12" x2="12" y2="21"/>
+              <path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"/>
+            </svg>
+          </div>
+          <div class="dz-text">
+            <span class="dz-primary">Drop images here</span>
+            <span class="dz-or">or</span>
+            <span class="dz-browse">Browse files</span>
+          </div>
+          <div class="dz-hint">Supports PNG, JPG, WebP, GIF</div>
+        </div>
+
+        <!-- Preview Grid -->
+        <div class="preview-grid" *ngIf="imageItems.length > 0">
+          <div *ngFor="let img of imageItems; let i = index" class="preview-card">
+            <img [src]="img.preview" [alt]="img.name" class="preview-img"/>
+            <div class="preview-overlay">
+              <button class="preview-remove" (click)="removeImage(i)" title="Remove image">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round">
+                  <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+                </svg>
+              </button>
+            </div>
+            <div class="preview-info">
+              <span class="preview-name" [title]="img.name">{{ img.name }}</span>
+              <span class="preview-size" *ngIf="img.size">{{ img.size }}</span>
+            </div>
+          </div>
+
+          <!-- Add more slot -->
+          <div class="preview-add" (click)="openFilePicker()">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+              <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+            </svg>
+            <span>Add more</span>
+          </div>
+        </div>
+
+      </div><!-- end images field -->
+
+    </div><!-- end body -->
+
+    <!-- ── Footer ── -->
+    <div class="drawer-foot">
+      <button class="btn-cancel" (click)="cancel()">Cancel</button>
+      <button class="btn-save" (click)="save()" [class.btn-disabled]="submitted && !isValid">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="20 6 9 17 4 12"/>
+        </svg>
+        {{ product ? 'Save Changes' : 'Add Product' }}
+      </button>
+    </div>
+
+  </div>
+</div>
