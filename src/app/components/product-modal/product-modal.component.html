@@ -1,0 +1,161 @@
+@if (isOpen) {
+<div class="modal" (click)="onClose()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+
+    <div class="modal-header">
+      <div class="header-left">
+        <h2>{{ product ? 'Edit Product' : 'Add New Product' }}</h2>
+      </div>
+      <button class="close-btn" (click)="onClose()">✕</button>
+    </div>
+
+    <div class="modal-body">
+
+      <div class="product-title-section">
+        <div class="form-group">
+          <label>Product Title *</label>
+          <input id="modal-title" type="text" [(ngModel)]="editingProduct.title"
+            placeholder="e.g. Sterling Silver Necklace">
+        </div>
+      </div>
+
+      <!-- ── eBay Section ── -->
+      <div class="platform-card">
+        <div class="platform-header">
+          <img class="platform-logo" src="/images/EBay_logo.png" alt="eBay logo">
+          <span class="platform-badge">Listing Info</span>
+        </div>
+        <div class="platform-fields">
+          <div class="form-group full-width">
+            <label>eBay Listing URL</label>
+            <input id="modal-ebay-url" type="url" [(ngModel)]="editingProduct.ebayUrl"
+              placeholder="https://ebay.com/itm/...">
+          </div>
+          <div class="form-group">
+            <label>Category</label>
+            <select id="modal-category" [(ngModel)]="editingProduct.category">
+              <option value="">Select category</option>
+              <option value="necklaces">Necklaces</option>
+              <option value="rings">Rings</option>
+              <option value="bracelets">Bracelets</option>
+              <option value="earrings">Earrings</option>
+              <option value="nose-rings">Nose Rings</option>
+              <option value="charms">Charms</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Quantity</label>
+            <input id="modal-quantity" type="number" [(ngModel)]="editingProduct.quantity" placeholder="0" min="0">
+          </div>
+          <div class="form-group">
+            <label>Item Price ($)</label>
+            <input id="modal-item-price" type="number" [(ngModel)]="editingProduct.ebayPrice" placeholder="0.00"
+              step="0.01">
+          </div>
+          <div class="form-group full-width shipping-group">
+            <div class="shipping-header">
+              <label>Shipping Charge ($)</label>
+              <div class="free-shipping-toggle">
+                <span class="toggle-label" [class.active]="editingProduct.freeShipping">
+                  🚚 Free Shipping
+                </span>
+                <label class="toggle-switch">
+                  <input id="modal-free-shipping" type="checkbox" [(ngModel)]="editingProduct.freeShipping">
+                  <span class="toggle-slider"></span>
+                </label>
+              </div>
+            </div>
+            <input id="modal-shipping" type="number" [(ngModel)]="editingProduct.shippingCost" placeholder="0.00"
+              step="0.01" [disabled]="editingProduct.freeShipping" [class.input-disabled]="editingProduct.freeShipping">
+          </div>
+          <div class="form-group full-width">
+            <label>Description</label>
+            <textarea id="modal-description" [(ngModel)]="editingProduct.description"
+              placeholder="Briefly describe the product..."></textarea>
+          </div>
+          <div class="form-group full-width">
+            <label>Product Images</label>
+            <div class="file-upload-wrapper">
+              <input id="modal-images" type="file" multiple accept="image/*">
+              <div class="file-upload-ui">
+                📁 &nbsp;Click to upload images
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-divider"><span>Source</span></div>
+
+      <!-- amazon section -->
+      <div class="platform-card">
+        <div class="platform-header">
+          <img class="platform-logo-amazon" src="/images/amazon-logo.png" alt="Amazon logo">
+          <span class="platform-badge">Supplier Info</span>
+        </div>
+        <div class="platform-fields">
+          <div class="form-group full-width">
+            <label>Amazon URL</label>
+            <input id="modal-amazon-url" type="url" [(ngModel)]="editingProduct.amazonUrl"
+              placeholder="https://amazon.com/dp/...">
+          </div>
+          <div class="form-group">
+            <label>Amazon Price ($)</label>
+            <input id="modal-amazon-price" type="number" [(ngModel)]="editingProduct.amazonPrice" placeholder="0.00"
+              step="0.01">
+          </div>
+          <div class="form-group">
+            <label>Shipping Cost ($)</label>
+            <input id="modal-amazon-shipping" type="number" [(ngModel)]="editingProduct.amazonShipping"
+              placeholder="0.00" step="0.01">
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Edit-only: Stock Status ── -->
+      @if (product) {
+      <div class="section-divider"><span>Status</span></div>
+      <div class="form-group">
+        <label>Stock Status</label>
+        <div class="stock-badge-row">
+          <div class="stock-option">
+            <input id="stock-in" type="radio" name="stockStatus" value="in_stock"
+              [(ngModel)]="editingProduct.stockStatus">
+            <label for="stock-in">🟢 In Stock</label>
+          </div>
+          <div class="stock-option">
+            <input id="stock-low" type="radio" name="stockStatus" value="low_stock"
+              [(ngModel)]="editingProduct.stockStatus">
+            <label for="stock-low">🟡 Low Stock</label>
+          </div>
+          <div class="stock-option">
+            <input id="stock-out" type="radio" name="stockStatus" value="out_of_stock"
+              [(ngModel)]="editingProduct.stockStatus">
+            <label for="stock-out">🔴 Out of Stock</label>
+          </div>
+        </div>
+      </div>
+      }
+
+      <!-- ── Add-only: Alerts ── -->
+      @if (!product) {
+      <label class="checkbox-label" style="margin-top:4px;">
+        <input id="modal-alerts" type="checkbox" [(ngModel)]="editingProduct.alertsEnabled">
+        Enable price &amp; stock alerts
+      </label>
+      }
+
+    </div><!-- /modal-body -->
+
+    <!-- ── Footer ── -->
+    <div class="modal-footer">
+      <button id="modal-cancel-btn" class="btn-secondary" (click)="onClose()">Cancel</button>
+      <button id="modal-save-btn" class="btn-primary" (click)="onSave()">
+        {{ product ? '💾 Save Changes' : '✦ Add Product' }}
+      </button>
+    </div>
+
+  </div>
+</div>
+}

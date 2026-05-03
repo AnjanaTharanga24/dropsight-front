@@ -1,1 +1,37 @@
-<p>product works!</p>
+<div class="product-container">
+  <!-- Header -->
+  <div class="page-header">
+    <h1>Products</h1>
+    <button class="btn-primary" (click)="openAddModal()">
+      + Add Product
+    </button>
+  </div>
+
+  <app-product-stats 
+    [totalProducts]="totalProducts"
+    [outOfStockCount]="outOfStockCount"
+    [totalProfit]="totalProfit"
+    [activeAlerts]="activeAlerts">
+  </app-product-stats>
+
+  <app-product-filters
+    [searchTerm]="searchTerm"
+    [statusFilter]="statusFilter"
+    (searchChange)="onSearchChange($event)"
+    (filterChange)="onFilterChange($event)">
+  </app-product-filters>
+
+  <app-product-table
+    [products]="filteredProducts"
+    (edit)="openEditModal($event)"
+    (delete)="deleteProduct($event)"
+    (toggleAlert)="toggleAlerts($event)">
+  </app-product-table>
+
+  <app-product-modal
+    [product]="selectedProduct"
+    [isOpen]="isModalOpen"
+    (save)="saveProduct($event)"
+    (close)="closeModal()">
+  </app-product-modal>
+</div>

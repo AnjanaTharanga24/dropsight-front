@@ -1,0 +1,544 @@
+/* ── Google Font ─────────────────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+/* ── CSS Variables ───────────────────────────────────── */
+:host {
+  --accent:       #3b82f6;
+  --accent-light: #eff6ff;
+  --accent-mid:   #bfdbfe;
+  --text-primary: #111827;
+  --text-secondary:#6b7280;
+  --text-label:   #374151;
+  --border:       #e5e7eb;
+  --border-focus: #3b82f6;
+  --surface:      #ffffff;
+  --surface-2:    #f9fafb;
+  --surface-3:    #f3f4f6;
+  --shadow-sm:    0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.04);
+  --shadow-md:    0 4px 20px rgba(0,0,0,.10), 0 2px 6px rgba(0,0,0,.06);
+  --shadow-lg:    0 20px 60px rgba(0,0,0,.14), 0 8px 24px rgba(0,0,0,.08);
+  --radius-sm:    8px;
+  --radius-md:    12px;
+  --radius-lg:    20px;
+  font-family: 'Inter', sans-serif;
+}
+
+/* ── Overlay ─────────────────────────────────────────── */
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.45);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 16px;
+  animation: fadeIn 0.2s ease;
+}
+
+/* ── Modal Card ──────────────────────────────────────── */
+.modal-content {
+  background: var(--surface);
+  border-radius: var(--radius-lg);
+  width: 100%;
+  max-width: 680px;
+  max-height: 92vh;
+  overflow-y: auto;
+  box-shadow: var(--shadow-lg);
+  animation: slideUp 0.32s cubic-bezier(0.34, 1.48, 0.64, 1);
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+
+.modal-content::-webkit-scrollbar { width: 5px; }
+.modal-content::-webkit-scrollbar-track { background: transparent; }
+.modal-content::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 10px;
+}
+
+/* ── Header ──────────────────────────────────────────── */
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 22px 28px 18px;
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  background: var(--surface);
+  z-index: 10;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.modal-title-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: var(--radius-sm);
+  background: linear-gradient(135deg, #3b82f6, #60a5fa);
+  font-size: 17px;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.28);
+  flex-shrink: 0;
+}
+
+.modal-header h2 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: -0.3px;
+}
+
+.close-btn {
+  width: 34px;
+  height: 34px;
+  border-radius: var(--radius-sm);
+  background: var(--surface-3);
+  border: 1px solid var(--border);
+  font-size: 14px;
+  cursor: pointer;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  line-height: 1;
+}
+
+.close-btn:hover {
+  background: #fee2e2;
+  border-color: #fca5a5;
+  color: #ef4444;
+  transform: rotate(90deg);
+}
+
+/* ── Body ────────────────────────────────────────────── */
+.modal-body {
+  padding: 22px 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* ── Platform Cards ──────────────────────────────────── */
+.platform-card {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  background: var(--surface);
+  box-shadow: var(--shadow-sm);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.platform-card:hover {
+  border-color: var(--accent-mid);
+  box-shadow: 0 4px 16px rgba(59, 130, 246, 0.08);
+}
+
+.platform-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  background: var(--surface-2);
+  border-bottom: 1px solid var(--border);
+}
+
+.platform-logo {
+  height: 38px;
+  max-width: 120px;
+  width: auto;
+  object-fit: contain;
+}
+
+.platform-logo-amazon {
+  height: 40px;
+  width: auto;
+  object-fit: contain;
+}
+
+.platform-badge {
+  margin-left: auto;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--text-secondary);
+  background: var(--surface-3);
+  border: 1px solid var(--border);
+  padding: 3px 10px;
+  border-radius: 20px;
+}
+
+.platform-fields {
+  padding: 16px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+/* ── Form Groups ─────────────────────────────────────── */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.form-group.full-width {
+  grid-column: 1 / -1;
+}
+
+.form-group label {
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-label);
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  padding: 9px 13px;
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  color: var(--text-primary);
+  font-family: 'Inter', sans-serif;
+  transition: border-color 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+  color: #9ca3af;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  border-color: var(--border-focus);
+  background: var(--accent-light);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12);
+}
+
+.form-group select {
+  appearance: none;
+  cursor: pointer;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%236b7280' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  padding-right: 34px;
+}
+
+.form-group textarea {
+  resize: vertical;
+  min-height: 72px;
+}
+
+/* ── File Upload ─────────────────────────────────────── */
+.file-upload-wrapper {
+  position: relative;
+  cursor: pointer;
+}
+
+.file-upload-wrapper input[type="file"] {
+  opacity: 0;
+  position: absolute;
+  inset: 0;
+  cursor: pointer;
+  width: 100%;
+  height: 100%;
+}
+
+.file-upload-ui {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 13px;
+  background: var(--accent-light);
+  border: 1.5px dashed var(--accent-mid);
+  border-radius: var(--radius-sm);
+  color: var(--accent);
+  font-size: 13px;
+  font-weight: 500;
+  font-family: 'Inter', sans-serif;
+  transition: all 0.2s ease;
+  pointer-events: none;
+}
+
+.file-upload-wrapper:hover .file-upload-ui {
+  background: #dbeafe;
+  border-color: var(--accent);
+}
+
+/* ── Shipping Row ────────────────────────────────────── */
+/* ── Shipping Group ──────────────────────────────────── */
+.shipping-group {
+  grid-column: 1 / -1;
+}
+
+.shipping-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+
+.shipping-header label {
+  margin-bottom: 0;
+}
+
+.free-shipping-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.toggle-label {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  transition: color 0.2s ease;
+}
+
+.toggle-label.active {
+  color: #16a34a;
+  font-weight: 600;
+}
+
+/* Toggle Switch */
+.toggle-switch {
+  position: relative;
+  display: inline-block;
+  width: 40px;
+  height: 22px;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.toggle-switch input[type="checkbox"] {
+  opacity: 0;
+  width: 0;
+  height: 0;
+  position: absolute;
+  padding: 0;
+  border: none;
+  box-shadow: none;
+}
+
+.toggle-slider {
+  position: absolute;
+  inset: 0;
+  background: #d1d5db;
+  border-radius: 22px;
+  transition: background 0.25s ease;
+}
+
+.toggle-slider::before {
+  content: '';
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  left: 3px;
+  top: 3px;
+  background: white;
+  border-radius: 50%;
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+}
+
+.toggle-switch input:checked + .toggle-slider {
+  background: #22c55e;
+}
+
+.toggle-switch input:checked + .toggle-slider::before {
+  transform: translateX(18px);
+}
+
+/* Disabled input state */
+.input-disabled {
+  background: var(--surface-3) !important;
+  color: #9ca3af !important;
+  cursor: not-allowed !important;
+  border-color: var(--border) !important;
+  box-shadow: none !important;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 13px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  user-select: none;
+  font-family: 'Inter', sans-serif;
+}
+
+.checkbox-label input[type="checkbox"] {
+  width: 15px;
+  height: 15px;
+  accent-color: var(--accent);
+  cursor: pointer;
+  flex-shrink: 0;
+  padding: 0;
+  border: none;
+  box-shadow: none;
+  background: none;
+}
+
+.checkbox-label input[type="checkbox"]:focus {
+  box-shadow: none;
+}
+
+/* ── Divider ─────────────────────────────────────────── */
+.section-divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 2px 0;
+}
+
+.section-divider::before,
+.section-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+.section-divider span {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--text-secondary);
+}
+
+/* ── Stock Status ────────────────────────────────────── */
+.stock-badge-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.stock-option input[type="radio"] { display: none; }
+
+.stock-option label {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 7px 14px;
+  border-radius: var(--radius-sm);
+  border: 1.5px solid var(--border);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  color: var(--text-secondary);
+  background: var(--surface);
+  text-transform: none;
+  letter-spacing: 0;
+  font-family: 'Inter', sans-serif;
+}
+
+.stock-option label:hover {
+  border-color: var(--accent-mid);
+  background: var(--accent-light);
+}
+
+.stock-option input[type="radio"]:checked + label {
+  border-color: var(--accent);
+  background: var(--accent-light);
+  color: var(--accent);
+  font-weight: 600;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+/* ── Footer ──────────────────────────────────────────── */
+.modal-footer {
+  padding: 16px 28px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  background: var(--surface-2);
+  border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+  position: sticky;
+  bottom: 0;
+}
+
+/* ── Buttons ─────────────────────────────────────────── */
+.btn-primary {
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  color: #ffffff;
+  border: none;
+  padding: 10px 24px;
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  font-weight: 600;
+  font-family: 'Inter', sans-serif;
+  cursor: pointer;
+  transition: all 0.22s ease;
+  letter-spacing: 0.2px;
+  box-shadow: 0 4px 14px rgba(59, 130, 246, 0.32);
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 22px rgba(59, 130, 246, 0.42);
+}
+
+.btn-primary:active { transform: translateY(0); }
+
+.btn-secondary {
+  background: var(--surface);
+  color: var(--text-secondary);
+  border: 1.5px solid var(--border);
+  padding: 10px 20px;
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  font-weight: 500;
+  font-family: 'Inter', sans-serif;
+  cursor: pointer;
+  transition: all 0.18s ease;
+}
+
+.btn-secondary:hover {
+  background: var(--surface-3);
+  color: var(--text-primary);
+  border-color: #d1d5db;
+}
+
+/* ── Animations ──────────────────────────────────────── */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { transform: translateY(24px) scale(0.97); opacity: 0; }
+  to   { transform: translateY(0) scale(1);       opacity: 1; }
+}
+
+/* ── Responsive ──────────────────────────────────────── */
+@media (max-width: 600px) {
+  .modal-header, .modal-body, .modal-footer { padding-left: 16px; padding-right: 16px; }
+  .platform-fields { grid-template-columns: 1fr; }
+  .modal-content { border-radius: 16px; }
+}

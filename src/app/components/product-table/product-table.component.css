@@ -1,0 +1,193 @@
+/* Table */
+.table-container {
+  background: white;
+  border-radius: 12px;
+  overflow-x: auto;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.products-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.products-table thead {
+  background: #f8f9fa;
+  border-bottom: 2px solid #e0e0e0;
+}
+
+.products-table th {
+  padding: 16px;
+  text-align: left;
+  font-weight: 600;
+  color: #555;
+  font-size: 15px;
+}
+
+.products-table td {
+  padding: 16px;
+  border-bottom: 1px solid #f0f0f0;
+  vertical-align: middle;
+}
+
+.product-title {
+  min-width: 250px;
+}
+
+.product-name {
+  font-weight: 500;
+  color: #1a1a2e;
+  margin-bottom: 4px;
+}
+
+.product-last-checked {
+  font-size: 12px;
+  color: #999;
+}
+
+.asin {
+  font-family: monospace;
+  font-size: 14px;
+  color: #666;
+}
+
+.price {
+  font-weight: 500;
+  color: #2c3e50;
+}
+
+.profit {
+  font-weight: 600;
+}
+
+.profit.positive {
+  color: #10b981;
+}
+
+.margin-badge {
+  background: #e8f5e9;
+  color: #2e7d32;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+/* Status Badges */
+.status-badge {
+  display: inline-block;
+  padding: 5px 13px;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.status-in-stock {
+  background: #d4edda;
+  color: #155724;
+}
+
+.status-low-stock {
+  background: #fff3cd;
+  color: #856404;
+}
+
+.status-out-of-stock {
+  background: #f8d7da;
+  color: #721c24;
+}
+
+/* Toggle Switch */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 44px;
+  height: 24px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: 0.3s;
+  border-radius: 24px;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 18px;
+  width: 18px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  transition: 0.3s;
+  border-radius: 50%;
+}
+
+input:checked + .slider {
+  background-color: #4facfe;
+}
+
+input:checked + .slider:before {
+  transform: translateX(20px);
+}
+
+/* Action Buttons */
+.actions {
+  display: flex;
+  gap: 8px;
+}
+
+.action-btn {
+  padding: 7px 12px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 15px;
+  transition: all 0.2s;
+}
+
+.action-btn.edit {
+  background: #e3f2fd;
+  color: #1976d2;
+}
+
+.action-btn.edit:hover {
+  background: #1976d2;
+  color: white;
+}
+
+.action-btn.delete {
+  background: #ffebee;
+  color: #d32f2f;
+}
+
+.action-btn.delete:hover {
+  background: #d32f2f;
+  color: white;
+}
+
+.no-data {
+  text-align: center;
+  padding: 48px;
+  color: #999;
+  font-size: 18px;
+}
+
+@media (max-width: 768px) {
+  .products-table th,
+  .products-table td {
+    padding: 12px;
+  }
+}
