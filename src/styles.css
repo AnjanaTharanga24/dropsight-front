@@ -1,1 +1,13 @@
-/* You can add global styles to this file, and also import other style files */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  background: #080e1c;
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: #0d1526; }
+::-webkit-scrollbar-thumb { background: #2d3f5e; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #3d5070; }

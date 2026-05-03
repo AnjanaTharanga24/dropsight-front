@@ -1,0 +1,239 @@
+<div class="dashboard">
+
+  <!-- ═══════════════════════════════ TOP BAR ═══════════════════════════════ -->
+  <header class="topbar">
+    <div class="topbar-brand">
+      <div class="brand-logo">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+          <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"
+                stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <div>
+        <div class="brand-name">DropCommand</div>
+        <div class="brand-sub">Control Center</div>
+      </div>
+    </div>
+
+    <div class="topbar-center">
+      <div class="live-pill">
+        <span class="pulse-ring"></span>
+        <span class="pulse-core"></span>
+        LIVE
+      </div>
+      <span class="updated-text">Updated {{ lastUpdated | date:'HH:mm:ss' }}</span>
+    </div>
+
+    <div class="topbar-right">
+      <div class="period-btn">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/>
+          <line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
+        </svg>
+        May 2026
+      </div>
+      <button class="refresh-btn" (click)="refresh()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <polyline points="23 4 23 10 17 10"/>
+          <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
+        </svg>
+        Refresh
+      </button>
+    </div>
+  </header>
+
+  <!-- ═════════════════════════════ SECTION LABEL ═══════════════════════════ -->
+  <div class="section-row">
+    <div class="section-left">
+      <h2 class="section-title">Business Overview</h2>
+      <span class="section-hint">Real-time metrics · Click any card to explore</span>
+    </div>
+    <div class="section-date">{{ lastUpdated | date:'EEEE, MMMM d, y' }}</div>
+  </div>
+
+  <!-- ═════════════════════════════ METRIC CARDS ════════════════════════════ -->
+  <div class="metric-grid">
+    <div
+      *ngFor="let c of summaryCards; let i = index"
+      class="metric-card {{ c.colorClass }}"
+      [style.animation-delay.ms]="i * 80"
+      (click)="navigate(c.route)"
+    >
+      <div class="mc-glow"></div>
+      <div class="mc-top">
+        <div class="mc-icon">{{ c.symbol }}</div>
+        <div class="mc-pill {{ c.changeClass }}">
+          {{ c.trendUp ? '▲' : '▼' }} {{ c.change }}
+        </div>
+      </div>
+      <div class="mc-value">{{ c.value }}</div>
+      <div class="mc-label">{{ c.title }}</div>
+      <div class="mc-sub">{{ c.subtitle }}</div>
+      <div class="mc-footer">
+        <span class="mc-view">View details →</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════ ROW 1 : CHART + ALERTS ═════════════════════════ -->
+  <div class="content-grid">
+
+    <!-- Profit Trend Line Chart -->
+    <div class="panel">
+      <div class="panel-head">
+        <div class="panel-head-left">
+          <h3 class="panel-title">Profit Trend</h3>
+          <span class="panel-sub">Monthly profit — last 12 months</span>
+        </div>
+        <div class="ytd-chip">+$6,000 YTD &nbsp;↑ 8%</div>
+      </div>
+
+      <svg viewBox="0 0 480 130" class="chart-svg" preserveAspectRatio="none">
+        <defs>
+          <linearGradient id="areaGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%"   stop-color="#10b981" stop-opacity="0.35"/>
+            <stop offset="100%" stop-color="#10b981" stop-opacity="0.02"/>
+          </linearGradient>
+          <filter id="lineGlow" x="-5%" y="-80%" width="110%" height="260%">
+            <feGaussianBlur stdDeviation="4" result="blur"/>
+            <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+        </defs>
+        <!-- gridlines -->
+        <line x1="10" y1="10"  x2="470" y2="10"  stroke="rgba(255,255,255,0.05)" stroke-width="1"/>
+        <line x1="10" y1="40"  x2="470" y2="40"  stroke="rgba(255,255,255,0.05)" stroke-width="1"/>
+        <line x1="10" y1="70"  x2="470" y2="70"  stroke="rgba(255,255,255,0.05)" stroke-width="1"/>
+        <line x1="10" y1="100" x2="470" y2="100" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>
+        <line x1="10" y1="115" x2="470" y2="115" stroke="rgba(255,255,255,0.10)" stroke-width="1"/>
+        <!-- area fill -->
+        <polygon [attr.points]="areaPoints" fill="url(#areaGrad)"/>
+        <!-- glowing line -->
+        <polyline
+          [attr.points]="linePoints"
+          fill="none"
+          stroke="#10b981"
+          stroke-width="2.5"
+          stroke-linejoin="round"
+          stroke-linecap="round"
+          filter="url(#lineGlow)"
+        />
+        <!-- crisp line on top -->
+        <polyline
+          [attr.points]="linePoints"
+          fill="none"
+          stroke="#34d399"
+          stroke-width="1.8"
+          stroke-linejoin="round"
+          stroke-linecap="round"
+        />
+      </svg>
+      <div class="chart-xlabels">
+        <span *ngFor="let m of months">{{ m }}</span>
+      </div>
+    </div>
+
+    <!-- Recent Alerts -->
+    <div class="panel panel-alerts">
+      <div class="panel-head">
+        <div class="panel-head-left">
+          <h3 class="panel-title">Recent Alerts</h3>
+          <span class="panel-sub">Needs your attention</span>
+        </div>
+        <div class="alert-badge">{{ alerts.length }} new</div>
+      </div>
+
+      <div class="alerts-feed">
+        <div
+          *ngFor="let a of alerts"
+          class="alert-card {{ a.severity }}"
+          (click)="navigate(a.route)"
+        >
+          <div class="alert-icon {{ a.severity }}">
+            <span *ngIf="a.severity === 'error'">✕</span>
+            <span *ngIf="a.severity === 'warning'">!</span>
+          </div>
+          <div class="alert-body">
+            <div class="alert-msg">{{ a.message }}</div>
+            <div class="alert-time">{{ a.time }}</div>
+          </div>
+          <div class="alert-arrow">›</div>
+        </div>
+      </div>
+
+      <button class="view-all-btn" (click)="navigate('alerts')">
+        View All Alerts →
+      </button>
+    </div>
+
+  </div>
+
+  <!-- ══════════════════════ ROW 2 : BAR CHART + PRODUCTS ══════════════════ -->
+  <div class="content-grid">
+
+    <!-- Revenue vs Expenses Bar Chart -->
+    <div class="panel">
+      <div class="panel-head">
+        <div class="panel-head-left">
+          <h3 class="panel-title">Revenue vs Expenses</h3>
+          <span class="panel-sub">Last 6 months · hover bars for details</span>
+        </div>
+        <div class="legend-row">
+          <span class="leg-item"><span class="leg-dot ld-blue"></span>Revenue</span>
+          <span class="leg-item"><span class="leg-dot ld-red"></span>Expenses</span>
+        </div>
+      </div>
+
+      <div class="bar-chart-wrap">
+        <div *ngFor="let d of revenueExpenses" class="bc-group">
+          <div class="bc-bars">
+            <div class="bc-bar bc-blue" [style.height.px]="getBarHeight(d.revenue)">
+              <div class="bc-tooltip">${{ d.revenue | number }}</div>
+            </div>
+            <div class="bc-bar bc-red" [style.height.px]="getBarHeight(d.expenses)">
+              <div class="bc-tooltip">${{ d.expenses | number }}</div>
+            </div>
+          </div>
+          <div class="bc-label">{{ d.month }}</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Top Performing Products -->
+    <div class="panel">
+      <div class="panel-head">
+        <div class="panel-head-left">
+          <h3 class="panel-title">Top Performing Products</h3>
+          <span class="panel-sub">Ranked by profit margin</span>
+        </div>
+        <span class="text-link" (click)="navigate('products')">View all ›</span>
+      </div>
+
+      <div class="products-list">
+        <div
+          *ngFor="let p of topProducts; let i = index"
+          class="product-row"
+          (click)="navigate('products')"
+        >
+          <div class="product-rank">#{{ i + 1 }}</div>
+          <div class="product-info">
+            <div class="product-name">{{ p.name }}</div>
+            <div class="product-bar-track">
+              <div class="product-bar-fill" [style.width.%]="revenueBarPct(p.revenue)"></div>
+            </div>
+          </div>
+          <div class="product-meta">
+            <div class="product-profit">${{ p.profit | number }}</div>
+            <div class="product-tags">
+              <span [class]="getMarginClass(p.margin)">{{ p.margin }}%</span>
+              <span [class]="getStatusClass(p.status)">
+                {{ p.status === 'active' ? 'Active' : 'OOS' }}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</div>
