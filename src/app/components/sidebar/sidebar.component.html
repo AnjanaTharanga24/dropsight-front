@@ -1,0 +1,26 @@
+<aside class="sidebar">
+  <div class="logo">
+    <span class="logo-icon">👁️</span>
+    <span class="logo-text">DropSight</span>
+  </div>
+  
+  <nav class="nav-menu">
+    @for (item of menuItems; track item.path) {
+      <a 
+        [routerLink]="item.path" 
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{exact: true}"
+        class="nav-item">
+        <span class="nav-icon">{{ item.icon }}</span>
+        <span class="nav-label">{{ item.label }}</span>
+      </a>
+    }
+  </nav>
+  
+  <div class="bottom-info">
+    <div class="system-status">
+      <span class="status-dot"></span>
+      <span class="status-text">Monitoring Active</span>
+    </div>
+  </div>
+</aside>
