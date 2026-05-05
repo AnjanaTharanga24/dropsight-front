@@ -1,56 +1,77 @@
-<div class="table-container">
-  <table class="products-table">
-    <thead>
-      <tr>
-        <th>Product</th>
-        <th>ASIN</th>
-        <th>Amazon Price</th>
-        <th>eBay Price</th>
-        <th>Profit</th>
-        <th>Margin</th>
-        <th>Status</th>
-        <th>Alerts</th>
-        <th>Actions</th>
-      </tr>
-    </thead>
-    <tbody>
-      @for (product of products; track product.id) {
-        <tr>
-          <td class="product-title">
-            <div class="product-info">
-              <div class="product-name">{{ product.title }}</div>
-              <div class="product-last-checked">Checked: {{ product.lastChecked | date:'short' }}</div>
-            </div>
-          </td>
-          <td class="asin">{{ product.asin }}</td>
-          <td class="price">${{ product.amazonPrice.toFixed(2) }}</td>
-          <td class="price">${{ product.ebayPrice.toFixed(2) }}</td>
-          <td class="profit positive">+${{ product.profit.toFixed(2) }}</td>
-          <td class="margin">
-            <span class="margin-badge">{{ product.margin.toFixed(0) }}%</span>
-          </td>
-          <td>
-            <span class="status-badge {{ getStockStatusClass(product.stockStatus) }}">
-              {{ getStockStatusText(product.stockStatus) }}
-            </span>
-          </td>
-          <td>
+<div class="product-grid">
+  @for (product of products; track product.id) {
+    <div class="product-card">
+      <!-- Card Header: Title & Badge -->
+      <div class="card-header">
+        <div class="header-main">
+          <h3 class="product-name">{{ product.title }}</h3>
+          <span class="status-badge {{ getStockStatusClass(product.stockStatus) }}">
+            {{ getStockStatusText(product.stockStatus) }}
+          </span>
+        </div>
+        <div class="product-meta">
+          <span class="asin">ASIN: {{ product.asin }}</span>
+          <span class="last-checked">Checked: {{ product.lastChecked | date:'short' }}</span>
+        </div>
+      </div>
+
+      <!-- Card Body: Price Comparison -->
+      <div class="card-body">
+        <div class="price-comparison">
+          <div class="price-item amazon">
+            <img src="/images/amazon-logo.png" alt="Amazon" class="platform-mini-logo">
+            <span class="price-value">${{ product.amazonPrice.toFixed(2) }}</span>
+          </div>
+          <div class="price-arrow">→</div>
+          <div class="price-item ebay">
+            <img src="/images/EBay_logo.png" alt="eBay" class="platform-mini-logo">
+            <span class="price-value">${{ product.ebayPrice.toFixed(2) }}</span>
+          </div>
+        </div>
+
+        <div class="profit-row">
+          <div class="profit-box positive">
+            <label>Est. Profit</label>
+            <span class="value">+${{ product.profit.toFixed(2) }}</span>
+          </div>
+          <div class="margin-box">
+            <label>Margin</label>
+            <span class="value">{{ product.margin.toFixed(0) }}%</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card Footer: Links & Actions -->
+      <div class="card-footer">
+        <div class="platform-links">
+          <a [href]="product.amazonUrl" target="_blank" class="link-btn amazon" title="View on Amazon">
+             View on Amazon
+          </a>
+          <a [href]="product.ebayUrl" target="_blank" class="link-btn ebay" title="View on eBay">
+             View on eBay
+          </a>
+        </div>
+
+        <div class="footer-bottom">
+          <div class="alert-toggle">
+            <span class="toggle-text">Alerts</span>
             <label class="switch">
               <input type="checkbox" [(ngModel)]="product.alertsEnabled" (change)="onToggleAlert(product)">
               <span class="slider"></span>
             </label>
-          </td>
-          <td class="actions">
-            <button class="action-btn edit" (click)="onEdit(product)">✏️</button>
-            <button class="action-btn delete" (click)="onDelete(product.id)">🗑️</button>
-          </td>
-        </tr>
-      }
-      @empty {
-        <tr>
-          <td colspan="9" class="no-data">No products found</td>
-        </tr>
-      }
-    </tbody>
-  </table>
+          </div>
+          <div class="action-buttons">
+            <button class="action-btn edit" (click)="onEdit(product)" title="Edit Product">✏️ Edit</button>
+            <button class="action-btn delete" (click)="onDelete(product.id)" title="Delete Product">🗑️</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+  @empty {
+    <div class="no-data">
+      <div class="no-data-icon">📦</div>
+      <p>No products found. Add your first product to get started!</p>
+    </div>
+  }
 </div>

@@ -11,6 +11,7 @@ export interface Product {
   title: string;
   asin: string;
   ebayUrl: string;
+  amazonUrl: string;
   amazonPrice: number;
   ebayPrice: number;
   profit: number;
@@ -55,6 +56,7 @@ export class ProductComponent implements OnInit {
         title: 'Wireless Bluetooth Headphones',
         asin: 'B08N5WRWNW',
         ebayUrl: 'https://ebay.com/listing/123',
+        amazonUrl: 'https://amazon.com/dp/B08N5WRWNW',
         amazonPrice: 29.99,
         ebayPrice: 49.99,
         profit: 20.00,
@@ -69,6 +71,7 @@ export class ProductComponent implements OnInit {
         title: 'Smart Watch Fitness Tracker',
         asin: 'B07Z8Q9X5M',
         ebayUrl: 'https://ebay.com/listing/456',
+        amazonUrl: 'https://amazon.com/dp/B07Z8Q9X5M',
         amazonPrice: 45.50,
         ebayPrice: 79.99,
         profit: 34.49,
@@ -83,6 +86,7 @@ export class ProductComponent implements OnInit {
         title: 'USB-C Charging Cable 3-Pack',
         asin: 'B09G9Y7K4L',
         ebayUrl: 'https://ebay.com/listing/789',
+        amazonUrl: 'https://amazon.com/dp/B09G9Y7K4L',
         amazonPrice: 8.99,
         ebayPrice: 18.99,
         profit: 10.00,
@@ -165,6 +169,7 @@ export class ProductComponent implements OnInit {
         title: productData.title || '',
         asin: productData.asin || '',
         ebayUrl: productData.ebayUrl || '',
+        amazonUrl: productData.amazonUrl || '',
         amazonPrice: productData.amazonPrice || 0,
         ebayPrice: productData.ebayPrice || 0,
         profit: (productData.ebayPrice || 0) - (productData.amazonPrice || 0),

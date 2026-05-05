@@ -1,40 +1,56 @@
-/* Filters */
 .filters-bar {
   display: flex;
   gap: 16px;
-  margin-bottom: 24px;
+  margin-bottom: 32px;
   flex-wrap: wrap;
+  background: white;
+  padding: 16px;
+  border-radius: 16px;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
 .search-box {
   flex: 1;
-  min-width: 250px;
+  min-width: 300px;
 }
 
 .search-box input {
   width: 100%;
-  padding: 11px 16px;
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
+  padding: 12px 18px;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 12px;
   font-size: 16px;
-  transition: border-color 0.2s;
+  transition: all 0.2s;
+  background: #f9fafb;
 }
 
 .search-box input:focus {
   outline: none;
-  border-color: #4facfe;
+  border-color: #3b82f6;
+  background: white;
+  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
 }
 
 .filter-group select {
-  padding: 11px 16px;
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
+  padding: 12px 20px;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 12px;
   font-size: 16px;
-  background: white;
+  background: #f9fafb;
   cursor: pointer;
+  transition: all 0.2s;
+  color: #374151;
+  font-weight: 500;
 }
 
 .filter-group select:focus {
   outline: none;
-  border-color: #4facfe;
+  border-color: #3b82f6;
+  background: white;
+  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+}
+
+.filter-group select:hover {
+  border-color: #d1d5db;
 }
