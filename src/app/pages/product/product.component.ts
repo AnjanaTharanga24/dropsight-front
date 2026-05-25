@@ -5,22 +5,8 @@ import { ProductStatsComponent } from '../../components/product-stats/product-st
 import { ProductFiltersComponent } from '../../components/product-filters/product-filters.component';
 import { ProductTableComponent } from '../../components/product-table/product-table.component';
 import { ProductModalComponent } from '../../components/product-modal/product-modal.component';
-
-export interface Product {
-  id: number;
-  title: string;
-  asin: string;
-  ebayUrl: string;
-  amazonUrl: string;
-  amazonPrice: number;
-  ebayPrice: number;
-  profit: number;
-  margin: number;
-  stockStatus: 'in_stock' | 'low_stock' | 'out_of_stock';
-  images: string[];
-  lastChecked: Date;
-  alertsEnabled: boolean;
-}
+import { Product } from '../../modal/product/ProductDto';
+import { ProductService } from '../../service/product-service/product.service';
 
 @Component({
   selector: 'app-product',
@@ -34,76 +20,37 @@ export class ProductComponent implements OnInit {
   filteredProducts: Product[] = [];
   searchTerm: string = '';
   statusFilter: string = 'all';
-  
+
   isModalOpen: boolean = false;
   selectedProduct: Product | null = null;
-  
-  // Stats
+  successMessage: string = '';
+
   totalProducts: number = 0;
   activeAlerts: number = 0;
   totalProfit: number = 0;
   outOfStockCount: number = 0;
 
+  constructor(private productService: ProductService) {}
+
   ngOnInit() {
-    this.loadMockData();
-    this.calculateStats();
+    this.loadProducts();
   }
 
-  loadMockData() {
-    this.products = [
-      {
-        id: 1,
-        title: 'Wireless Bluetooth Headphones',
-        asin: 'B08N5WRWNW',
-        ebayUrl: 'https://ebay.com/listing/123',
-        amazonUrl: 'https://amazon.com/dp/B08N5WRWNW',
-        amazonPrice: 29.99,
-        ebayPrice: 49.99,
-        profit: 20.00,
-        margin: 40,
-        stockStatus: 'in_stock',
-        images: ['headphones.jpg'],
-        lastChecked: new Date('2024-01-15'),
-        alertsEnabled: true
+  loadProducts() {
+    this.productService.getAllProducts().subscribe({
+      next: (data) => {
+        this.products = data;
+        this.applyFilters();
+        this.calculateStats();
       },
-      {
-        id: 2,
-        title: 'Smart Watch Fitness Tracker',
-        asin: 'B07Z8Q9X5M',
-        ebayUrl: 'https://ebay.com/listing/456',
-        amazonUrl: 'https://amazon.com/dp/B07Z8Q9X5M',
-        amazonPrice: 45.50,
-        ebayPrice: 79.99,
-        profit: 34.49,
-        margin: 43,
-        stockStatus: 'low_stock',
-        images: ['watch.jpg'],
-        lastChecked: new Date('2024-01-14'),
-        alertsEnabled: true
-      },
-      {
-        id: 3,
-        title: 'USB-C Charging Cable 3-Pack',
-        asin: 'B09G9Y7K4L',
-        ebayUrl: 'https://ebay.com/listing/789',
-        amazonUrl: 'https://amazon.com/dp/B09G9Y7K4L',
-        amazonPrice: 8.99,
-        ebayPrice: 18.99,
-        profit: 10.00,
-        margin: 53,
-        stockStatus: 'out_of_stock',
-        images: ['cable.jpg'],
-        lastChecked: new Date('2024-01-13'),
-        alertsEnabled: false
-      }
-    ];
-    this.applyFilters();
+      error: (err) => console.error('Failed to load products', err)
+    });
   }
 
   calculateStats() {
     this.totalProducts = this.products.length;
     this.outOfStockCount = this.products.filter(p => p.stockStatus === 'out_of_stock').length;
-    this.totalProfit = this.products.reduce((sum, p) => sum + p.profit, 0);
+    this.totalProfit = this.products.reduce((sum, p) => sum + (p.profit ?? 0), 0);
     this.activeAlerts = this.products.filter(p => p.alertsEnabled && p.stockStatus === 'low_stock').length;
   }
 
@@ -113,7 +60,7 @@ export class ProductComponent implements OnInit {
     if (this.searchTerm) {
       filtered = filtered.filter(p => 
         p.title.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
-        p.asin.toLowerCase().includes(this.searchTerm.toLowerCase())
+        p.asin?.toLowerCase().includes(this.searchTerm.toLowerCase())
       );
     }
     
@@ -149,42 +96,16 @@ export class ProductComponent implements OnInit {
     this.selectedProduct = null;
   }
 
-  saveProduct(productData: any) {
-    if (this.selectedProduct) {
-      // Update
-      const index = this.products.findIndex(p => p.id === this.selectedProduct!.id);
-      if (index !== -1) {
-        const updated = {
-          ...this.selectedProduct,
-          ...productData,
-          profit: productData.ebayPrice - productData.amazonPrice,
-          margin: ((productData.ebayPrice - productData.amazonPrice) / (productData.ebayPrice || 1)) * 100
-        };
-        this.products[index] = updated;
-      }
-    } else {
-      // Add
-      const newProduct: Product = {
-        id: this.products.length + 1,
-        title: productData.title || '',
-        asin: productData.asin || '',
-        ebayUrl: productData.ebayUrl || '',
-        amazonUrl: productData.amazonUrl || '',
-        amazonPrice: productData.amazonPrice || 0,
-        ebayPrice: productData.ebayPrice || 0,
-        profit: (productData.ebayPrice || 0) - (productData.amazonPrice || 0),
-        margin: (((productData.ebayPrice || 0) - (productData.amazonPrice || 0)) / (productData.ebayPrice || 1)) * 100,
-        stockStatus: 'in_stock',
-        images: [],
-        lastChecked: new Date(),
-        alertsEnabled: productData.alertsEnabled || false
-      };
-      this.products.push(newProduct);
-    }
-    
+  saveProduct(savedProduct: Product) {
+    this.products.push(savedProduct);
     this.applyFilters();
     this.calculateStats();
-    this.closeModal();
+    this.showSuccess('Product added successfully!');
+  }
+
+  showSuccess(message: string) {
+    this.successMessage = message;
+    setTimeout(() => this.successMessage = '', 3000);
   }
 
   deleteProduct(id: number) {

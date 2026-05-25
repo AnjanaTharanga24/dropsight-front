@@ -20,23 +20,23 @@
         <div class="price-comparison">
           <div class="price-item amazon">
             <img src="/images/amazon-logo.png" alt="Amazon" class="platform-mini-logo">
-            <span class="price-value">${{ product.amazonPrice.toFixed(2) }}</span>
+            <span class="price-value">${{ (product.amazonPrice ?? 0).toFixed(2) }}</span>
           </div>
           <div class="price-arrow">→</div>
           <div class="price-item ebay">
             <img src="/images/EBay_logo.png" alt="eBay" class="platform-mini-logo">
-            <span class="price-value">${{ product.ebayPrice.toFixed(2) }}</span>
+            <span class="price-value">${{ (product.ebayPrice ?? 0).toFixed(2) }}</span>
           </div>
         </div>
 
         <div class="profit-row">
           <div class="profit-box positive">
             <label>Est. Profit</label>
-            <span class="value">+${{ product.profit.toFixed(2) }}</span>
+            <span class="value">+${{ ((product.ebayPrice ?? 0) - (product.amazonPrice ?? 0)).toFixed(2) }}</span>
           </div>
           <div class="margin-box">
             <label>Margin</label>
-            <span class="value">{{ product.margin.toFixed(0) }}%</span>
+            <span class="value">{{ (product.ebayPrice ? (((product.ebayPrice - (product.amazonPrice ?? 0)) / product.ebayPrice) * 100) : 0).toFixed(0) }}%</span>
           </div>
         </div>
       </div>
